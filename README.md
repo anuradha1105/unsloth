@@ -1,224 +1,102 @@
 ✅ Note: All five Colab notebooks (Full Finetuning, LoRA, GRPO Reasoning, Continued Pretraining, and DPO) have been consolidated into a single unified notebook — Unsloth_ai_colab.ipynb — for ease of execution and review.
 
 
-# Unsloth Modern AI Suite 
- 
-**Goal:** Implement five Unsloth-driven LLM workflows, each demonstrated in a **Colab notebook** and a **YouTube walkthrough**. Provide clear configs, evaluation, and export paths (GGUF / Ollama).
+# 🧠 Unsloth AI Assignment
 
-> **Quick links**
-> - Unsloth notebooks (reference): https://github.com/unslothai/notebooks
-> - Finetuning guide: https://docs.unsloth.ai/get-started/fine-tuning-llms-guide
-> - RL guide + GRPO: https://docs.unsloth.ai/get-started/reinforcement-learning-rl-guide
-> - Reasoning blog (R1/GRPO): https://unsloth.ai/blog/r1-reasoning
-> - Continued pretraining basics: https://docs.unsloth.ai/basics/continued-pretraining
-> - Example Kaggle NB: https://www.kaggle.com/code/kingabzpro/fine-tuning-llms-using-unsloth
+This repository contains six Colab notebooks demonstrating modern fine-tuning and alignment techniques using **[Unsloth](https://github.com/unslothai/unsloth)** — an optimized library for efficient large language model (LLM) training on Google Colab.
+
+Each notebook focuses on a different AI training paradigm such as full fine-tuning, continued pretraining, LoRA / QLoRA adaptation, and alignment through DPO or GRPO.  
+All experiments were performed using **`smollm2-135M`**, a compact open model suitable for Colab GPUs.
 
 ---
 
-## 🗂️ Repository Layout
+## 📁 Repository Structure
 
 ```
-unsloth/
-├─ colabs/                             #  All the colabs are merged in one .ipynb
-│  ├─ colab1_full_ft_smollm2_135m.ipynb
-│  ├─ colab2_lora_smollm2_135m.ipynb
-│  ├─ colab3_rl_preference_data.ipynb
-│  ├─ colab4_rl_grpo_reasoning.ipynb
-│  └─ colab5_continued_pretraining.ipynb
-
-
-
----
-
-## 🔧 Environment & Installation
-
-- Recommended Python: **3.10–3.11**
-- Colab: **T4/A100**, CUDA ≥ 12.x works; enable GPU in *Runtime → Change runtime type*.  
-- Minimal install:
-  ```bash
-  pip install "unsloth" "transformers>=4.44" "accelerate>=1.0.0"               "datasets>=3.0.0" "trl>=0.11.0" "peft>=0.13.0"               "evaluate" "scikit-learn" "tensorboard" "pyyaml"               "bitsandbytes"  # Linux GPU only
-  ```
-- If you see **“unsloth ... does not provide the extra 'all'”**, just use `unsloth` (extras were removed).
-- GPU wheels: install a PyTorch CUDA build matching your driver; then reinstall `bitsandbytes`.
+unsloth_assignment/
+│
+├── 1_full_finetuning.ipynb
+├── 2_continued_pretraining_hindi.ipynb
+├── 3_qlora_finetuning.ipynb
+├── 4_grpo_reasoning.ipynb
+├── 5_dpo_alignment.ipynb
+├── 6_rlaif_reward_model.ipynb
+│
+└── README.md
+```
 
 ---
 
-## 🎯 Assignment Overview 
+## 📚 Overview of Colabs
 
-For each task:
-1. **Cloned/created a Colab**, ran **end-to-end without errors**, and **recorded a YouTube walkthrough** explaining: dataset, input format, code path, hyperparameters, training, evaluation, and inference.
-2. Produced **metrics** (loss & perplexity, and task-specific evals), **screenshots**, and **short demo outputs**.
-3. Committed configs, results tables, and a short **demo_script.md** for the talk track.
-
-
-
----
-
-## a) Colab 1 — **Full Finetuning** on a Small Model (SmolLM2-135M)
-
-- **Objective:** Show *full finetuning* (`full_finetuning: true`) on the smallest model to minimize compute while demonstrating full-weight updates.
-- **Base models considered:** `HuggingFaceTB/SmolLM2-135M` (primary), plus notes on `unsloth/gemma-3-1b-it-unsloth-bnb-4bit` and other small open weights.
-- **Task type:** Instruction-following (chat) or lightweight coding Q&A.
-- **Input format (SFT):** JSONL with `instruction`, `input`, `output` (or chat template format). Example:
-  ```json
-  {"instruction":"Write a Python function to sum a list.","input":"","output":"def sum_list(xs): return sum(xs)"}
-  ```
-- **Chat templates:** I tested multiple chat model templates and documented which prompt format/tokenizer special tokens are required.
-- **Config notes:**
-  - `configs/base.yaml`: set `model_name: "HuggingFaceTB/SmolLM2-135M"`
-  - `configs/rl.yaml`: not used here
-  - In code/notebook, pass `full_finetuning=True`, disable LoRA modules.
-  - Short epochs (e.g., 1–3) and small seq len for Colab T4.
-- **Colab:** `colabs/colab1_full_ft_smollm2_135m.ipynb`
-- **Video:** *(link to upload)*
-
-**Run card**
-| Run | Full FT | Model | Dataset | Seq Len | Batch x Accum | Epochs | LR | Val PPL ↓ | Notes | Video |
-|---|---|---|---|---:|---:|---:|---:|---:|---|---|
-| colab1-ft-s135m | ✅ | SmolLM2‑135M | (name here) | 2048 | 4 × 4 | 2 | 2e‑4 | **X.XX** | Baseline full‑FT | [YouTube]() |
+| **#** | **Colab Title** | **Technique / Trainer** | **Objective** |
+|:--:|:-----------------|:------------------------|:--------------|
+| **1** | `1_full_finetuning.ipynb` | Full fine-tuning (SFTTrainer) | Trains the base model end-to-end on an English instruction dataset to learn general instruction following. |
+| **2** | `2_continued_pretraining_hindi.ipynb` | Continued pretraining (SFTTrainer) | Performs domain adaptation on a **custom Hindi text corpus**, extending the model’s multilingual capabilities. |
+| **3** | `3_qlora_finetuning.ipynb` | QLoRA / 4-bit fine-tuning | Demonstrates parameter-efficient training using low-rank adapters and quantized weights for faster training. |
+| **4** | `4_grpo_reasoning.ipynb` | GRPOTrainer (Reasoning Optimization) | Enhances reasoning and chain-of-thought behavior using a small reasoning / math dataset. |
+| **5** | `5_dpo_alignment.ipynb` | DPOTrainer (Direct Preference Optimization) | Aligns model responses with human preferences using a dataset of paired “chosen” vs “rejected” answers. |
+| **6** | `6_rlaif_reward_model.ipynb` | Reward model training (optional) | Trains a small reward model on synthetic “good / bad” responses, demonstrating self-alignment (RLAIF). |
 
 ---
 
-## b) Colab 2 — **LoRA / QLoRA** on the Same Model & Dataset
+## 🧩 Datasets Used
 
-- **Objective:** Repeat Colab 1 with **parameter-efficient finetuning** (LoRA/QLoRA).
-- **Why:** Demonstrate memory savings, faster training, and similar task quality.
-- **Config notes:**
-  - `configs/lora.yaml`: `use_lora: true`, set `r`, `alpha`, `target_modules`, `bnb_4bit: true` for QLoRA.
-  - In notebook, ensure `full_finetuning=False` (or omit) and PEFT is active.
-- **Colab:** `colabs/colab2_lora_smollm2_135m.ipynb`
-- **Video:** *(link to upload)*
+| **Colab #** | **Dataset** | **Language** | **Purpose** |
+|:-------------|:-------------|:--------------|:-------------|
+| 1 | Alpaca / Instruction dataset (`yahma/alpaca-cleaned`) | English | Teaches base model instruction following. |
+| 2 | Custom Hindi corpus (Wikipedia / news / text file) | Hindi | Expands vocabulary and contextual fluency in Hindi. |
+| 3 | Same Alpaca-style dataset | English | Tests QLoRA efficiency versus full finetuning. |
+| 4 | Reasoning dataset (math / logic Q&A) | English | Improves step-by-step reasoning and consistency. |
+| 5 | Preference pairs (helpful vs harmful answers) | English | Enables alignment without a reward model (DPO). |
+| 6 | Synthetic reward dataset | English | Optional demonstration of reward modeling. |
 
-**Run card**
-| Run | LoRA | Model | Dataset | r / α | 4‑bit | Epochs | LR | Val PPL ↓ | Δ vs Full FT | Notes | Video |
-|---|---|---|---|---|---|---:|---:|---:|---|---|---|
-| colab2-lora-s135m | ✅ | SmolLM2‑135M | (name) | 16 / 32 | nf4 | 2 | 2e‑4 | **X.XX** | (↑/↓) | Memory‑efficient | [YouTube]() |
-
----
-
-## c) Colab 3 — **Reinforcement Learning (Preference Data)**
-
-- **Objective:** Use a dataset containing **prompt + preferred + rejected** responses to run an RL pipeline (e.g., DPO/ORPO/standard preference objectives as supported by TRL/Unsloth flow).
-- **Input format:** JSONL with `prompt`, `chosen`, `rejected` (or the format required by the chosen trainer).
-- **Config:** `configs/rl.yaml` (num_steps, kl_coef/β where applicable, reward/preference objective).
-- **Outputs:** Policy checkpoint (adapters if LoRA), reward curves, offline eval on held-out prompts.
-- **Colab:** `colabs/colab3_rl_preference_data.ipynb`
-- **Video:** *(link to upload)*
-
-**Run card**
-| Run | Objective | Model | Dataset | Steps | β / KL | Val Metric | Notes | Video |
-|---|---|---|---|---:|---:|---:|---|---|
-| colab3-rl-pref | DPO/ORPO | SmolLM2‑135M | (name) | N | 0.1 | **X.XX** | Pref‑tuning | [YouTube]() |
+> **Note:** Large model checkpoints (`pytorch_model.bin`, `*.safetensors`, etc.) are intentionally **not included** in this repository to keep it lightweight.  
+> All trained weights were saved separately to Google Drive during experiments.
 
 ---
 
-## d) Colab 4 — **Reinforcement Learning with GRPO (Reasoning)**
+## ⚙️ Environment Setup
 
-- **Objective:** Train a **reasoning‑style** model using **GRPO** as per Unsloth’s guide.
-- **Dataset:** Problem statements with verifiable answers (math/logic). Model generates solutions; reward based on correctness & reasoning signals.
-- **Key notes:**
-  - Smaller models can be used for demonstration; watch context length and reward computation latency.
-  - Log both **pass@k** and **reward curves**.
-- **Colab:** `colabs/colab4_rl_grpo_reasoning.ipynb`
-- **Video:** *(link to upload)*
+Each notebook automatically installs required dependencies inside Colab:
 
-**Run card**
-| Run | Algo | Model | Task | Steps | Pass@1 ↑ | Reward ↑ | Notes | Video |
-|---|---|---|---|---:|---:|---:|---|---|
-| colab4-grpo | GRPO | SmolLM2‑135M (or 2B) | reasoning | N | **X%** | **X.XX** | R1‑style demo | [YouTube]() |
-
----
-
-## e) Colab 5 — **Continued Pretraining** (Teach a New Domain/Language)
-
-- **Objective:** Use Unsloth for **continued pretraining (CPT)** on raw text to extend vocabulary/domain knowledge (e.g., a low‑resource language or domain docs).
-- **Data:** Unstructured text (tokenized). Create `data/processed/cpt_train.txt` (or HF dataset).
-- **Config:** `configs/cpt.yaml` with tokenizer updates (if needed), MLM/causal LM flags, and schedule.
-- **Artifacts:** Updated tokenizer (optional), continued‑pretrained model, sample losses.
-- **Colab:** `colabs/colab5_continued_pretraining.ipynb`
-- **Video:** *(link to upload)*
-
-**Run card**
-| Run | Mode | Base | Tokens (M) | Epochs | LR | Val Loss ↓ | Notes | Video |
-|---|---|---|---:|---:|---:|---:|---|---|
-| colab5-cpt | CPT (causal) | SmolLM2‑135M | X | 1‑3 | 2e‑4 | **X.XX** | New language/domain | [YouTube]() |
-
----
-
-## 📦 Data & Formats
-
-- **SFT (full‑FT / LoRA):** JSONL with `instruction`, `input`, `output`. For chat‑template models, convert to the model’s template (documented in each notebook).
-- **Preference RL:** JSONL with `prompt`, `chosen`, `rejected` (or trainer‑specific schema).
-- **GRPO:** Problem → answer pair; reward function checks correctness (and optionally solution structure).
-- **CPT:** Raw text corpus (UTF‑8).
-
-Data prep entrypoint:
 ```bash
-python scripts/prepare_data.py --config configs/base.yaml
+!pip install -q "unsloth==2025.11.2" "trl" "transformers" "datasets" "peft" "accelerate"
 ```
 
----
-
-## 🧪 Evaluation
-
-- **SFT/FT:** train/val loss, **perplexity**; small qualitative **win‑rate** vs base model on N prompts.
-- **RL (pref):** objective metric loss; human/automatic win‑rate on held‑out prompts.
-- **GRPO:** **pass@k**, reward‑per‑step curves; sample chain‑of‑thought style outputs (without exposing training-only content).
-- **CPT:** pretrain loss over steps; downstream quick probe (few prompts).
-
-Results saved under `experiments/results/<run_name>/` with a `metrics.json` and a markdown `summary.md`. Screenshots go in `docs/figures/`.
+Runtime requirements:
+- GPU: T4 / A100 (Colab)
+- Python: 3.10 or higher
+- Libraries: Unsloth, TRL, PEFT, Transformers, Accelerate
 
 ---
 
-## 💬 Inference & Chat Templates
+## 💾 Saving & Checkpoints
 
-- Inference script:
-  ```bash
-  python scripts/infer.py --adapters models/<run>/adapters     --prompt "Explain CRISP‑DM phases briefly for a grad class."
-  ```
-- I tested **multiple chat templates** (Llama/Gemma/Mistral‑style) and noted the required BOS/EOS/special tokens in the notebooks.
-- Sample prompts: `docs/demo_scripts/*`
+Every notebook includes a consistent saving pattern:
 
----
+```python
+SAVE_DIR = "experiment_name_final"
+trainer.save_model(SAVE_DIR)
+tokenizer.save_pretrained(SAVE_DIR)
+print("Saved to:", SAVE_DIR)
+```
 
-## 🚢 Export (GGUF & Ollama)
-
-- Merge LoRA adapters:
-  ```bash
-  python scripts/export.py --adapters models/<run>/adapters --merge-to models/<run>/merged
-  ```
-- Export GGUF (for llama.cpp):
-  ```bash
-  python scripts/export.py --to-gguf models/<run>/gguf
-  ```
-- **Ollama**:
-  1. Export merged/safetensors as required by the guide.
-  2. Create `Modelfile` and run `ollama create my-unsloth -f Modelfile`
-  3. `ollama run my-unsloth`
-- I included a short **inference UI** note in the notebooks (text box → response).
+Optionally, models were archived or moved to Google Drive for permanent storage.
 
 ---
 
-## 🧰 Troubleshooting (What I hit & fixed)
+## ✅ Deliverables Summary
 
-- **Pip extras warning:** `unsloth[all]` → just `unsloth`.
-- **CUDA/Torch mismatch:** installed the matching PyTorch CUDA wheel; reinstalled `bitsandbytes`.
-- **OOM on T4:** reduced `max_seq_length`, batch size; enabled QLoRA (`bnb_4bit: true`).
-- **`generate()` crash:** set `use_cache=False` during training; shorter prompts; verified tokenizer/model pairing.
-- **Accelerate config:** `accelerate config` to set mixed precision & GPU selection.
-
----
-
-## 📑 Report Template
-
-
-| Colab | Mode | Model | Dataset | Key HPs | Main Metric | Result | Artifacts |
-|---|---|---|---|---|---|---|---|
-| 1 | Full FT | SmolLM2‑135M | (name) | seq=2048, lr=2e‑4, ep=2 | Val PPL | **X.XX** | adapters/merged, sample gens |
-| 2 | LoRA | SmolLM2‑135M | (same) | r=16, nf4, ep=2 | Val PPL | **X.XX** | adapters, merged |
-| 3 | RL (pref) | SmolLM2‑135M | (pref set) | steps=N, β=0.1 | Win‑rate | **X%** | policy, curves |
-| 4 | GRPO | SmolLM2‑135M/2B | reasoning | steps=N | Pass@1 | **X%** | policy, curves |
-| 5 | CPT | SmolLM2‑135M | (corpus) | tokens=M, ep=1‑3 | Val loss | **X.XX** | cpt weights |
+| Component | Description |
+|:-----------|:-------------|
+| **Colab notebooks** | Complete training and evaluation code for all six use-cases. |
+| **Images (optional)** | Output screenshots and comparison results. |
+| **README.md** | Full documentation of tasks, datasets, and objectives. |
 
 ---
+
+### 📄 License
+Open-source educational submission under SJSU academic guidelines.  
+All datasets used are open or publicly available for research.
 
