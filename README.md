@@ -19,35 +19,13 @@
 
 ```
 unsloth/
-├─ requirements.txt                    # minimal pinned deps
-├─ configs/
-│  ├─ base.yaml                        # common knobs (model, data, train)
-│  ├─ lora.yaml                        # LoRA/QLoRA settings
-│  ├─ rl.yaml                          # RLHF/SFT/GRPO knobs
-│  └─ cpt.yaml                         # continued pretraining knobs
-├─ data/
-│  ├─ raw/                             # source datasets (gitignored)
-│  └─ processed/                       # tokenized/Cleaned JSONL splits
-├─ colabs/                             # each assignment has its own Colab
+├─ colabs/                             #  All the colabs are merged in one .ipynb
 │  ├─ colab1_full_ft_smollm2_135m.ipynb
 │  ├─ colab2_lora_smollm2_135m.ipynb
 │  ├─ colab3_rl_preference_data.ipynb
 │  ├─ colab4_rl_grpo_reasoning.ipynb
 │  └─ colab5_continued_pretraining.ipynb
-├─ scripts/
-│  ├─ prepare_data.py
-│  ├─ train.py                         # FT/SFT with/without LoRA
-│  ├─ evaluate.py                      # loss/ppl + quick win-rate
-│  ├─ infer.py                         # prompt chat/infer
-│  ├─ export.py                        # merge adapters, export gguf/ollama
-│  └─ utils.py
-├─ experiments/
-│  ├─ runs/                            # TB/accelerate logs (gitignored)
-│  └─ results/                         # metrics, artifacts, screenshots
-├─ models/                             # adapters/merged weights (gitignored)
-└─ docs/
 
-```
 
 
 ---
