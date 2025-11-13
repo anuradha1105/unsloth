@@ -1,9 +1,9 @@
 ✅ Note: All five Colab notebooks (Full Finetuning, LoRA, GRPO Reasoning, Continued Pretraining, and DPO) have been consolidated into a single unified notebook — Unsloth_ai_colab.ipynb — for ease of execution and review.
-
+https://colab.research.google.com/drive/1PPyvzQxBOAl0YQhoOzmfCCPEyQ1iOrnE#scrollTo=l-sgKVFesMV7 git hub couldn't take all the output due to lenghty colab, so i am attaching the colab link and also attaching it google drive i have share https://drive.google.com/drive/u/2/folders/19-XjTNPumbqKagj6GlWF06pjhOlOkZN8
 
 # 🧠 Unsloth AI Assignment
 
-This repository contains six Colab notebooks demonstrating modern fine-tuning and alignment techniques using **[Unsloth](https://github.com/unslothai/unsloth)** — an optimized library for efficient large language model (LLM) training on Google Colab.
+This repository contains six Colab notebooks demonstrating modern fine-tuning and alignment techniques using **[Unsloth](https://github.com/unslothai/unsloth)**, an optimized library for efficient large language model (LLM) training on Google Colab.
 
 Each notebook focuses on a different AI training paradigm such as full fine-tuning, continued pretraining, LoRA / QLoRA adaptation, and alignment through DPO or GRPO.  
 All experiments were performed using **`smollm2-135M`**, a compact open model suitable for Colab GPUs.
